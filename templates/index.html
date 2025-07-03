@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>S.S JORDAN'S CAFE</title>
+    <link href="../static/styles/cafe_app.css" rel="stylesheet" />
+  </head>
+
+  
+  <body>
+    <div class="menu">
+      <main>
+        <h1>S.S JORDAN'S CAFE</h1>
+        <p class="established">Est. 2025</p>
+        <hr>
+
+  <!-- Flash Error Message -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+
+  <!-- Customer Info -->
+  <form action="/order" method="post">
+          <label for="customer_name">Your Name:</label>
+          <input type="text" id="customer_name" name="customer_name" required><br><br>
+
+          <label for="customer_email">Email Address:</label>
+          <input type="email" id="customer_email" name="customer_email" required><br><br>
+
+  <!--Menu Item Info-->
+  <!--Coffe Menu Section-->
+          <section>
+            <h2>Coffee</h2>
+            <img src="{{ url_for('static', filename='images/coffee_icon.jpg')}}" alt="coffee icon"/>
+            {% for item in coffees %}
+            <article class="item">
+              <label>
+                <input type="checkbox" name="order_items" value="coffee||{{item.flavor}}||{{item.price}}">
+                <span class="flavor">{{item.flavor}}</span>
+                <span class="price">${{ '%.2f'|format(item.price) }}</span>
+              </label>
+              <label>
+                Quantity:
+                <input type="number" name="qty_{{item.flavor|replace(' ', '_')}}" min="1" value="1" style="width:50px;">
+              </label>
+            </article>
+            {% endfor %}
+          </section>
+
+  <!--Dessert Menu Section-->
+          <section>
+            <h2>Desserts</h2>
+            <img src="{{ url_for('static', filename='images/pie_icon.jpg')}}" alt="pie icon"/>
+            {% for item in desserts %}
+            <article class="item">
+              <label>
+                <input type="checkbox" name="order_items" value="dessert||{{item.name}}||{{item.price}}">
+                <span class="dessert">{{item.name}}</span>
+                <span class="price">${{ '%.2f'|format(item.price) }}</span>
+              </label>
+              <label>
+                Quantity:
+                <input type="number" name="qty_{{item.name|replace(' ', '_')}}" min="1" value="1" style="width:50px;">
+              </label>
+            </article>
+            {% endfor %}
+          </section>
+
+  <!--Place Order Button-->
+          <hr class="bottom-line">
+          <button type="submit">Place Order</button>
+        </form>
+      </main>
+
+  <!--Footer Section-->
+      <footer>
+        <p class="address">Bastos, Yaounde</p>
+      </footer>
+    </div>
+  </body>
+</html>

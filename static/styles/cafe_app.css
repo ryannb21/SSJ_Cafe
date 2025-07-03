@@ -1,0 +1,159 @@
+body {
+      background-image: url(../images/coffee_img.jpg);
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 80px;
+    }
+
+    .confirmation {
+      background-image: url(../images/confirmation_page_img.jpg);
+    }
+    
+    h1 {
+      font-size: 50px;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    
+    h2 {
+      font-size: 30px;
+    }
+    
+    .established {
+      font-style: italic;
+    }
+    
+    h1, h2, p {
+      text-align: center;
+    }
+    
+    .menu {
+      width: 80%;
+      background-color: burlywood;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px;
+      max-width: 500px;
+    }
+    
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: -25px;
+    }
+    
+    hr {
+      height: 2px;
+      background-color: brown;
+      border-color: brown;
+    }
+    
+    .bottom-line {
+      margin-top: 25px;
+    }
+    
+    h1, h2 {
+      font-family: Impact, serif;
+    }
+    
+    .item p {
+      display: inline-block;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      font-size: 18px;
+    }
+    
+    .flavor, .dessert {
+      text-align: left;
+      width: 75%;
+    }
+    
+    .price {
+      text-align: right;
+      width: 25%;
+    }
+    
+    /* FOOTER */
+    
+    footer {
+      font-size: 14px;
+    }
+    
+    .address {
+      margin-bottom: 5px;
+    }
+    
+    a {
+      color: black;
+    }
+    
+    a:visited {
+      color: black;
+    }
+    
+    a:hover {
+      color: brown;
+    }
+    
+    a:active {
+      color: brown;
+    }
+
+    input[type="checkbox"],
+input[type="number"] {
+  margin-right: 10px;
+}
+
+article.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.flashes {
+  list-style: none;
+  background: #ffebeb;
+  color: #c00;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Make each item layout like a row with 3 columns */
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+/* Inner label for flavor + price */
+.item > label:first-of-type {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Inner label for quantity input */
+.item > label:last-of-type {
+  width: 100px;
+  text-align: center;
+}
+
+/* Optional: Style the price and item name to align better */
+.item .flavor,
+.item .dessert {
+  flex: 1;
+  text-align: left;
+}
+
+.item .price {
+  width: 70px;
+  text-align: right;
+}

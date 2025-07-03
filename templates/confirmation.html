@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../static/styles/cafe_app.css" rel="stylesheet" />
+  <title>Order Confirmation</title>
+</head>
+
+<body class="confirmation">
+  <div class="menu">
+  <h1>Thank you for your order!</h1>
+  <p>Your order number is: <strong>#{{ order_id }}</strong>.<br>
+    Placed at: <strong>{{ order_time }}</strong><br>
+    Total cost: <strong>${{ "%.2f"|format(total) }} CDN</strong></p>
+
+  <h2>Order Details:</h2>
+  <ul>
+    {% for cat, name, price, qty, subtotal in items %}
+      <li>{{ qty }} x {{ name }} ({{ cat }}): ${{ "%.2f"|format(price) }} = ${{ "%.2f"|format(subtotal) }}</li>
+    {% endfor %}
+  </ul>
+  <hr>
+  <a href="/">Place another order</a>
+  </div>
+</body>
+</html>
