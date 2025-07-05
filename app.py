@@ -22,6 +22,7 @@ def get_secret(secret_name, region_name="us-east-1"):
 app = Flask(__name__)
 app.secret_key = 'change_this_to_a_secure_key' #REVIEW THIS
 
+
 #Loading email creds securely from AWS Secrets Manager
 email_secrets = get_secret("ssjordan-cafe/email-creds", region_name="us-east-1")  #Review concerns with hardcoding this
 # Gmail SMTP configuration
@@ -69,13 +70,13 @@ def index():
 def send_order_email(to_email, customer_name, items, total):
     item_lines = '\n'.join([f"- {name} ({qty} x ${price:.2f}) = ${subtotal:.2f}" for _, name, price, qty, subtotal in items])
     msg = Message(
-        subject="S.S Jordan's Cafe - Order Confirmation",
+        subject="Ryan's Cafe - Order Confirmation",
         sender=app.config['MAIL_USERNAME'],
         recipients=[to_email],
         body=f"""
 Hi {customer_name},
 
-Thank you for your order at S.S Jordan's Cafe!
+Thank you for your order at Ryan's Cafe!
 
 Here is your order summary:
 {item_lines}
@@ -85,7 +86,7 @@ Total: ${total:.2f}
 We hope to serve you again soon!
 
 Best regards,
-S.S Jordan's Cafe
+Ryan's Cafe
         """
     )
     mail.send(msg)
@@ -136,4 +137,4 @@ def place_order():
     return render_template('confirmation.html', order_id=order_id, items=order_details, total=total, order_time=order_time.strftime("%Y-%m-%d %H:%M:%S"))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
