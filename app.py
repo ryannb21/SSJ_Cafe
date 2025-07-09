@@ -46,6 +46,47 @@ DB_CONFIG = {
     'database': db_secrets['database']
 }
 
+def initialize_database():
+    # Connect to MySQL without specifying database first
+    cnx = mysql.connector.connect(
+        host=DB_CONFIG['host'],
+        user=DB_CONFIG['user'],
+        password=DB_CONFIG['password']
+    )
+    cursor = cnx.cursor()
+
+    # Create the database if it doesn't exist
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_CONFIG['database']}")
+    cursor.execute(f"USE {DB_CONFIG['database']}")
+
+    # Create tables if they don't exist (using your schema)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS orders (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          order_time DATETIME NOT NULL,
+          total_amount DECIMAL(7,2) NOT NULL
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS order_items (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          customer_name VARCHAR(100),
+          customer_email VARCHAR(100),
+          order_id INT NOT NULL,
+          category VARCHAR(50),
+          item_name VARCHAR(100),
+          unit_price DECIMAL(5,2),
+          quantity INT,
+          subtotal DECIMAL(7,2),
+          FOREIGN KEY (order_id) REFERENCES orders(id)
+        )
+    """)
+
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+
+
 # Menu data
 COFFEES = [
     {'flavor': 'French Vanilla', 'price': 3.00},
@@ -137,4 +178,5 @@ def place_order():
     return render_template('confirmation.html', order_id=order_id, items=order_details, total=total, order_time=order_time.strftime("%Y-%m-%d %H:%M:%S"))
 
 if __name__ == '__main__':
+    initialize_database()
     app.run(host='0.0.0.0', port=5000, debug=True)
