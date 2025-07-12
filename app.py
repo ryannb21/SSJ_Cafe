@@ -24,7 +24,7 @@ app.secret_key = 'change_this_to_a_secure_key' #REVIEW THIS
 
 
 #Loading email creds securely from AWS Secrets Manager
-email_secrets = get_secret("sjordan-cafev2/email-creds", region_name="us-east-1")  #Review concerns with hardcoding this
+email_secrets = get_secret("sjordan-cafev2/emailcreds", region_name="us-east-1")  #Review concerns with hardcoding this
 # Gmail SMTP configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
