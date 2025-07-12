@@ -36,8 +36,8 @@ if email_secrets is None:
 # Gmail SMTP configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = email_secrets['MAIL_USERNAME']         # replace this
-app.config['MAIL_PASSWORD'] = email_secrets['MAIL_PASSWORD']      # use Gmail app password, NOT regular password
+app.config['MAIL_USERNAME'] = email_secrets['email']         # replace this
+app.config['MAIL_PASSWORD'] = email_secrets['password']      # use Gmail app password, NOT regular password
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 
