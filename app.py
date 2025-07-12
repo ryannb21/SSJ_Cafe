@@ -96,6 +96,8 @@ def initialize_database():
     cursor.close()
     cnx.close()
 
+initialize_database()
+
 
 # Menu data
 COFFEES = [
@@ -188,4 +190,3 @@ def place_order():
     return render_template('confirmation.html', order_id=order_id, items=order_details, total=total, order_time=order_time.strftime("%Y-%m-%d %H:%M:%S"))
 
 if __name__ == '__main__':
-    initialize_database()
