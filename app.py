@@ -30,7 +30,7 @@ app.secret_key = 'change_this_to_a_secure_key' #REVIEW THIS
 
 
 #Loading email creds securely from AWS Secrets Manager
-email_secrets = get_secret("sjordan-cafev2/emailcreds", region_name="us-east-1")  #Review concerns with hardcoding this
+email_secrets = get_secret("sssjordan-cafev2/emailcreds", region_name="us-east-1")  #Review concerns with hardcoding this
 if email_secrets is None:
     raise ValueError("Failed to retrieve email secrets from Secrets Manager")
 # Gmail SMTP configuration
@@ -45,7 +45,7 @@ mail = Mail(app)
 
 
 #Loading database creds securely from AWS Secrets Manager
-db_secrets = get_secret("sjordan-cafev2/db_creds", region_name="us-east-1")
+db_secrets = get_secret("sssjordan-cafev2/db_creds", region_name="us-east-1")
 if db_secrets is None:
     raise ValueError("Failed to retrieve database secrets from Secrets Manager")
 #DB CONFIG
