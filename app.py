@@ -14,8 +14,14 @@ def get_secret(secret_name, region_name="us-east-1"):
         response = client.get_secret_value(SecretId=secret_name)
         secret = response['SecretString']
         return json.loads(secret)
+    except client.exceptions.ResourceNotFoundException:
+        print(f"Secret {secret_name} not found in region {region_name}")
+        return None
+    except client.exceptions.ClientError as e:
+        print(f"Error retrieving secret {secret_name}: {e}")
+        return None
     except Exception as e:
-        print("Error retrieving secret:", e)
+        print(f"Unexpected error retrieving secret {secret_name}: {e}")
         return None
 
 
@@ -25,6 +31,8 @@ app.secret_key = 'change_this_to_a_secure_key' #REVIEW THIS
 
 #Loading email creds securely from AWS Secrets Manager
 email_secrets = get_secret("sjordan-cafev2/emailcreds", region_name="us-east-1")  #Review concerns with hardcoding this
+if email_secrets is None:
+    raise ValueError("Failed to retrieve email secrets from Secrets Manager")
 # Gmail SMTP configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -38,6 +46,8 @@ mail = Mail(app)
 
 #Loading database creds securely from AWS Secrets Manager
 db_secrets = get_secret("sjordan-cafev2/db_creds", region_name="us-east-1")
+if db_secrets is None:
+    raise ValueError("Failed to retrieve database secrets from Secrets Manager")
 #DB CONFIG
 DB_CONFIG = {
     'host': db_secrets['host'],
