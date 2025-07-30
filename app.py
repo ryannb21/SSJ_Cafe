@@ -134,6 +134,7 @@ def index():
 
 # Sending order confirmation email to customer
 def send_order_email(to_email, customer_name, items, total):
+    try:
     item_lines = '\n'.join([f"- {name} ({qty} x ${price:.2f}) = ${subtotal:.2f}" for _, name, price, qty, subtotal in items])
     msg = Message(
         subject="Ryan's Cafe - Order Confirmation",
@@ -156,7 +157,7 @@ Ryan's Cafe
         """
     )
     mail.send(msg)
-except Exception as e:
+    except Exception as e:
         print(f"Error sending email: {e}")
         flash("Order placed, but failed to send confirmation email.")
 
