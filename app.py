@@ -6,6 +6,7 @@ import boto3
 import json
 import os
 import re
+import time
 
 #Setting AWS Secrets Manager Connection
 def get_secret(secret_name, region_name="us-east-1"):
@@ -108,8 +109,11 @@ def initialize_database():
             cursor.close()
         if 'cnx' in locals():
             cnx.close()
-
-initialize_database()
+#Attempting initialization without failing if the whole app is not ready yet
+try:
+    initialize_database()
+except Exception as e:
+    app.logger.warning(f"Initial DB setup has failed (will retry on /health or order): {e}")
 
 
 # Menu data
@@ -126,6 +130,32 @@ DESSERTS = [
     {'name': 'Strawberry Cheesecake', 'price': 3.00},
     {'name': 'Cinnamon Roll', 'price': 2.50},
 ]
+
+# Defining a health-check helper with backoff
+def try_db_connect(max_attempts=5, base_delay=1):
+    for attempt in range(1, max_attempts + 1):
+        try:
+            conn = mysql.connector.connect(
+                host=DB_CONFIG['host'],
+                user=DB_CONFIG['user'],
+                password=DB_CONFIG['password'],
+                database=DB_CONFIG['database'],
+                connection_timeout=5,
+            )
+            conn.close()
+            return True, "ok"
+        except Exception as e:
+            delay = base_delay * (2 ** (attempt - 1))
+            app.logger.warning(f"DB connect attempt {attempt} failed: {e}; retrying in {delay}s")
+            time.sleep(delay)
+    return False, f"failed after {max_attempts} attempts"
+
+@app.route("/health")
+def health():
+    db_ok, msg = try_db_connect()
+    status_code = 200 if db_ok else 503
+    return {"app": "running", "db": msg}, status_code
+
 
 # Defining the main app route
 @app.route('/')
