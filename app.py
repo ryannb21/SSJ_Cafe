@@ -6,6 +6,7 @@ import boto3
 import json
 import os
 import re
+import time  # added for backoff in health check
 
 #Setting AWS Secrets Manager Connection
 def get_secret(secret_name, region_name="us-east-1"):
@@ -30,14 +31,14 @@ def get_secret(secret_name, region_name="us-east-1"):
 app = Flask(__name__)
 
 #Loading secret key from AWS Secrets Manager
-secret_key = get_secret(os.getenv("FLASK_CAFE_SECRET_NAME", "jordan-cafev6/flask_secret"), region_name=os.getenv("AWS_REGION", "us-east-1"))
+secret_key = get_secret(os.getenv("FLASK_CAFE_SECRET_NAME", "jordan-cafev7/flask_secret"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if secret_key is None:
     raise ValueError("Failed to retrieve Flask secret key from Secrets Manager")
 app.secret_key = secret_key['secret_key']
 
 
 #Loading email creds securely from AWS Secrets Manager
-email_secrets = get_secret(os.getenv("EMAIL_SECRET_NAME", "jordan-cafev6/emailcreds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
+email_secrets = get_secret(os.getenv("EMAIL_SECRET_NAME", "jordan-cafev7/emailcreds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if email_secrets is None:
     raise ValueError("Failed to retrieve email secrets from Secrets Manager")
 # Gmail SMTP configuration
@@ -52,7 +53,7 @@ mail = Mail(app)
 
 
 #Loading database creds securely from AWS Secrets Manager
-db_secrets = get_secret(os.getenv("DB_SECRET_NAME", "jordan-cafev6/db_creds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
+db_secrets = get_secret(os.getenv("DB_SECRET_NAME", "jordan-cafev7/db_creds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if db_secrets is None:
     raise ValueError("Failed to retrieve database secrets from Secrets Manager")
 #DB CONFIG
@@ -62,6 +63,33 @@ DB_CONFIG = {
     'password': db_secrets['password'], 
     'database': db_secrets['database']
 }
+
+# --- readiness helper for /health ---
+def try_db_connect(max_attempts=5, base_delay=1):
+    for attempt in range(1, max_attempts + 1):
+        try:
+            conn = mysql.connector.connect(
+                host=DB_CONFIG['host'],
+                user=DB_CONFIG['user'],
+                password=DB_CONFIG['password'],
+                database=DB_CONFIG['database'],
+                connection_timeout=5,
+            )
+            conn.close()
+            return True, "ok"
+        except Exception as e:
+            delay = base_delay * (2 ** (attempt - 1))
+            app.logger.warning(f"DB connect attempt {attempt} failed: {e}; retrying in {delay}s")
+            time.sleep(delay)
+    return False, f"failed after {max_attempts} attempts"
+
+@app.route("/health")
+def health():
+    db_ok, msg = try_db_connect()
+    status_code = 200 if db_ok else 503
+    return {"app": "running", "db": msg}, status_code
+# --- end readiness helper ---
+
 
 def initialize_database():
     try:
