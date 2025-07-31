@@ -31,14 +31,14 @@ def get_secret(secret_name, region_name="us-east-1"):
 app = Flask(__name__)
 
 #Loading secret key from AWS Secrets Manager
-secret_key = get_secret(os.getenv("FLASK_CAFE_SECRET_NAME", "jordan-cafev3/flask_secret"), region_name=os.getenv("AWS_REGION", "us-east-1"))
+secret_key = get_secret(os.getenv("FLASK_CAFE_SECRET_NAME", "jordan-cafev4/flask_secret"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if secret_key is None:
     raise ValueError("Failed to retrieve Flask secret key from Secrets Manager")
 app.secret_key = secret_key['secret_key']
 
 
 #Loading email creds securely from AWS Secrets Manager
-email_secrets = get_secret(os.getenv("EMAIL_SECRET_NAME", "jordan-cafev3/emailcreds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
+email_secrets = get_secret(os.getenv("EMAIL_SECRET_NAME", "jordan-cafev4/emailcreds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if email_secrets is None:
     raise ValueError("Failed to retrieve email secrets from Secrets Manager")
 # Gmail SMTP configuration
@@ -53,7 +53,7 @@ mail = Mail(app)
 
 
 #Loading database creds securely from AWS Secrets Manager
-db_secrets = get_secret(os.getenv("DB_SECRET_NAME", "jordan-cafev3/db_creds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
+db_secrets = get_secret(os.getenv("DB_SECRET_NAME", "jordan-cafev4/db_creds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if db_secrets is None:
     raise ValueError("Failed to retrieve database secrets from Secrets Manager")
 #DB CONFIG
