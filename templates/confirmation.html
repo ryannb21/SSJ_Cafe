@@ -23,5 +23,31 @@
   <hr>
   <a href="/">Place another order</a>
   </div>
+
+  <!-- Client-side conversion of UTC ISO time to browser local timezone -->
+  <script>
+    (function () {
+      const iso = "{{order_time_iso}}";
+      if (iso) {
+        const dt = new Date(iso);
+        if (!isNaN(dt)) {
+          const pad = (n) => n.toString().padStart(2, "0");
+          const formatted =
+            dt.getFullYear() +
+            "-" +
+            pad(dt.getMonth() + 1) +
+            "-" +
+            pad(dt.getDate()) +
+            "-" +
+            pad(dt.getHours()) +
+            "-" +
+            pad(dt.getMinutes()) +
+            "-" +
+            pad(dt.getSeconds());
+          document.getElementById("order-time").textContent = formatted;
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
