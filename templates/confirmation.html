@@ -33,16 +33,11 @@
         if (!isNaN(dt)) {
           const pad = (n) => n.toString().padStart(2, "0");
           const formatted =
-            dt.getFullYear() +
-            "-" +
-            pad(dt.getMonth() + 1) +
-            "-" +
-            pad(dt.getDate()) +
-            "-" +
-            pad(dt.getHours()) +
-            "-" +
-            pad(dt.getMinutes()) +
-            "-" +
+            dt.getFullYear() + "-" +
+            pad(dt.getMonth() + 1) + "-" +
+            pad(dt.getDate()) + " " +
+            pad(dt.getHours()) + ":" +
+            pad(dt.getMinutes()) + ":" +
             pad(dt.getSeconds());
           document.getElementById("order-time").textContent = formatted;
         }
