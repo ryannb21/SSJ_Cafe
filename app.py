@@ -265,7 +265,7 @@ def place_order():
 
     send_order_email(customer_email, customer_name, order_details, total)
 
-    return render_template('confirmation.html', order_id=order_id, items=order_details, total=total, order_time=order_time.strftime("%Y-%m-%d %H:%M:%S"), order_time_iso=order_time_utc.isoformat())
+    return render_template('confirmation.html', order_id=order_id, items=order_details, total=total, order_time=order_time_utc.strftime("%Y-%m-%d %H:%M:%S"), order_time_iso=order_time_utc.isoformat())
 
 if __name__ == '__main__':
     app.run(debug=True)
