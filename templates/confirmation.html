@@ -11,7 +11,7 @@
   <div class="menu">
   <h1>Thank you for your order!</h1>
   <p>Your order number is: <strong>#{{ order_id }}</strong>.<br>
-    Placed at: <strong>{{ order_time }}</strong><br>
+    Placed at: <strong id="order-time">{{ order_time }}</strong><br>
     Total cost: <strong>${{ "%.2f"|format(total) }} CDN</strong></p>
 
   <h2>Order Details:</h2>
