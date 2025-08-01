@@ -2,11 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import mysql.connector
 from datetime import datetime
 from flask_mail import Mail, Message
+from zoneinfo import ZoneInfo
 import boto3
 import json
 import os
 import re
-import time  # added for backoff in health check
+import time
 
 #Setting AWS Secrets Manager Connection
 def get_secret(secret_name, region_name="us-east-1"):
@@ -238,12 +239,12 @@ def place_order():
 
     # Saving to the database
     try:
+        order_time_utc = datetime.now(tz=ZoneInfo("UTC"))
         conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor()
-        order_time = datetime.now()
         cursor.execute(
             "INSERT INTO orders (order_time, total_amount) VALUES (%s, %s)",
-            (order_time, total)
+            (order_time_utc.strftime("%Y-%m-%d %H:%M:%S"), total)
         )
         order_id = cursor.lastrowid
         for cat, name, price, qty, subtotal in order_details:
@@ -264,7 +265,7 @@ def place_order():
 
     send_order_email(customer_email, customer_name, order_details, total)
 
-    return render_template('confirmation.html', order_id=order_id, items=order_details, total=total, order_time=order_time.strftime("%Y-%m-%d %H:%M:%S"))
+    return render_template('confirmation.html', order_id=order_id, items=order_details, total=total, order_time=order_time.strftime("%Y-%m-%d %H:%M:%S"), order_time_iso=order_time_utc.isoformat())
 
 if __name__ == '__main__':
     app.run(debug=True)
